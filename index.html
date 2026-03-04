@@ -214,6 +214,120 @@
   .kana-card.learned .kana-speak { background: rgba(255,255,255,0.2); color: white; }
   .kana-card.learned .kana-speak:hover { background: rgba(255,255,255,0.4); }
 
+  /* ====== EXAMPLE WORD POPUP ====== */
+  .kana-popup-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeIn 0.15s ease;
+  }
+
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+  .kana-popup {
+    background: white;
+    border-radius: 24px;
+    padding: 32px 28px 24px;
+    max-width: 320px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    animation: popIn 0.25s cubic-bezier(0.34,1.56,0.64,1);
+    position: relative;
+  }
+
+  .kana-popup-char {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 72px;
+    font-weight: 900;
+    color: var(--dark);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .kana-popup-rom {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--red);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .kana-popup-divider {
+    height: 2px;
+    background: #f0f0f0;
+    border-radius: 2px;
+    margin-bottom: 20px;
+  }
+
+  .kana-popup-label {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 10px;
+  }
+
+  .kana-popup-ex {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--dark);
+    margin-bottom: 4px;
+  }
+
+  .kana-popup-exrom {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--teal);
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .kana-popup-exid {
+    font-size: 15px;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+
+  .kana-popup-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  .kana-popup-btn {
+    padding: 10px 22px;
+    border-radius: 50px;
+    border: none;
+    font-family: 'Nunito', sans-serif;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .kana-popup-btn.speak {
+    background: var(--warm);
+    color: var(--dark);
+  }
+  .kana-popup-btn.speak:hover { background: var(--gold); }
+
+  .kana-popup-btn.close {
+    background: var(--red);
+    color: white;
+    box-shadow: 0 4px 12px rgba(232,41,74,0.3);
+  }
+  .kana-popup-btn.close:hover { transform: scale(1.04); }
+
   /* Hidden mode */
   .hide-mode .kana-char {
     color: transparent;
@@ -327,6 +441,70 @@
   }
 
   .vocab-category-title:first-child { margin-top: 0; }
+
+  /* ====== QUIZ MODE SELECTOR ====== */
+  .quiz-mode-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+
+  .quiz-mode-card {
+    background: white;
+    border-radius: 20px;
+    padding: 24px 16px;
+    text-align: center;
+    cursor: pointer;
+    border: 2px solid #f0f0f0;
+    box-shadow: var(--shadow);
+    transition: all 0.2s;
+  }
+
+  .quiz-mode-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 36px rgba(0,0,0,0.13);
+    border-color: var(--red);
+  }
+
+  .quiz-mode-card:nth-child(1) { border-top: 4px solid var(--teal); }
+  .quiz-mode-card:nth-child(2) { border-top: 4px solid #c026d3; }
+  .quiz-mode-card:nth-child(3) { border-top: 4px solid var(--gold); }
+  .quiz-mode-card:nth-child(4) { border-top: 4px solid #f97316; }
+  .quiz-mode-all { border-top: 4px solid var(--red) !important; grid-column: 1 / -1; }
+
+  .quiz-mode-icon {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 40px;
+    font-weight: 900;
+    margin-bottom: 8px;
+    line-height: 1;
+  }
+
+  .quiz-mode-name {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--dark);
+    margin-bottom: 4px;
+  }
+
+  .quiz-mode-desc {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+
+  .quiz-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 13px;
+    font-weight: 800;
+    background: var(--warm);
+    color: var(--dark);
+  }
 
   /* ====== KUIS ====== */
   .quiz-container {
@@ -598,14 +776,14 @@
   /* ====== ANGKA ====== */
   .number-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 14px;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 10px;
   }
 
   .num-card {
     background: white;
-    border-radius: 16px;
-    padding: 20px 12px;
+    border-radius: 14px;
+    padding: 14px 6px;
     text-align: center;
     box-shadow: var(--shadow);
     border: 2px solid transparent;
@@ -619,7 +797,7 @@
   }
 
   .num-arabic {
-    font-size: 36px;
+    font-size: 24px;
     font-weight: 900;
     color: var(--red);
     display: block;
@@ -628,23 +806,22 @@
 
   .num-jp {
     font-family: 'Zen Maru Gothic', sans-serif;
-    font-size: 22px;
+    font-size: 16px;
     font-weight: 700;
     color: var(--dark);
     display: block;
-    margin: 4px 0;
+    margin: 3px 0;
   }
 
   .num-rom {
-    font-size: 12px;
+    font-size: 10px;
     color: var(--teal);
     font-weight: 700;
-    letter-spacing: 1px;
-    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
   .num-id {
-    font-size: 12px;
+    font-size: 10px;
     color: var(--muted);
     margin-top: 2px;
   }
@@ -671,7 +848,7 @@
     .kana-char { font-size: 24px; }
     .quiz-word { font-size: 56px; }
     .quiz-options { grid-template-columns: 1fr 1fr; }
-    .number-grid { grid-template-columns: repeat(3, 1fr); }
+    .number-grid { grid-template-columns: repeat(5, 1fr); gap: 8px; }
   }
 
   /* ====== TOAST ====== */
@@ -801,6 +978,106 @@
     color: var(--dark);
   }
   .menu-desc { font-size: 12px; color: var(--muted); font-weight: 600; }
+
+  /* ====== KANJI ====== */
+  .kanji-category-title {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 15px;
+    font-weight: 900;
+    color: var(--dark);
+    margin: 28px 0 12px;
+    padding-left: 14px;
+    border-left: 4px solid #f97316;
+    line-height: 1.3;
+  }
+  .kanji-category-title:first-child { margin-top: 0; }
+
+  .kanji-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .kanji-card {
+    background: white;
+    border-radius: 16px;
+    padding: 16px 12px 14px;
+    text-align: center;
+    cursor: pointer;
+    border: 2px solid #f0e8e0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .kanji-card:hover {
+    border-color: #f97316;
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 24px rgba(249,115,22,0.18);
+  }
+
+  .kanji-card.learned {
+    background: linear-gradient(135deg, #f97316, #fb923c);
+    border-color: #f97316;
+  }
+
+  .kanji-char {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 38px;
+    font-weight: 900;
+    display: block;
+    line-height: 1;
+    margin-bottom: 8px;
+    color: var(--dark);
+  }
+  .kanji-card.learned .kanji-char { color: white; }
+
+  .kanji-on {
+    font-size: 11px;
+    font-weight: 700;
+    color: #f97316;
+    display: block;
+    letter-spacing: 0.5px;
+  }
+  .kanji-card.learned .kanji-on { color: rgba(255,255,255,0.8); }
+
+  .kanji-kun {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--teal);
+    display: block;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+  }
+  .kanji-card.learned .kanji-kun { color: rgba(255,255,255,0.8); }
+
+  .kanji-id {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 5px;
+    display: block;
+    font-weight: 600;
+  }
+  .kanji-card.learned .kanji-id { color: rgba(255,255,255,0.75); }
+
+  .kanji-speak {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 8px;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(249,115,22,0.1);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #f97316;
+  }
+  .kanji-speak:hover { background: #f97316; color: white; transform: scale(1.15); }
+  .kanji-card.learned .kanji-speak { background: rgba(255,255,255,0.2); color: white; }
+  .kanji-card.learned .kanji-speak:hover { background: rgba(255,255,255,0.4); }
 </style>
 </head>
 <body>
@@ -820,6 +1097,7 @@
   <button class="tab-btn" onclick="goTab('kosakata')">📖 Kosakata</button>
   <button class="tab-btn" onclick="goTab('percakapan')">💬 Percakapan</button>
   <button class="tab-btn" onclick="goTab('angka')">🔢 Angka</button>
+  <button class="tab-btn" onclick="goTab('kanji')">漢 Kanji</button>
   <button class="tab-btn" onclick="goTab('kuis')">🎯 Kuis</button>
 </nav>
 
@@ -866,6 +1144,11 @@
         <div class="menu-icon">🔢</div>
         <div class="menu-name">Angka</div>
         <div class="menu-desc">Belajar berhitung</div>
+      </div>
+      <div class="menu-card" data-tab="kanji" onclick="goTab('kanji')" style="border-top:4px solid #f97316;">
+        <div class="menu-icon">漢</div>
+        <div class="menu-name">Kanji N5</div>
+        <div class="menu-desc">80 kanji dasar JLPT N5</div>
       </div>
       <div class="menu-card" data-tab="kuis" onclick="goTab('kuis')" style="grid-column:1/-1;">
         <div class="menu-icon">🎯</div>
@@ -928,23 +1211,71 @@
     <div class="number-grid" id="number-grid"></div>
   </div>
 
+  <!-- KANJI -->
+  <div class="section" id="sec-kanji">
+    <div class="section-title">漢字 Kanji N5</div>
+    <div class="section-sub">80 kanji dasar JLPT N5 — ketuk untuk menandai dipelajari ✅</div>
+    <div class="kanji-category-list" id="kanji-list"></div>
+  </div>
+
   <!-- KUIS -->
   <div class="section" id="sec-kuis">
     <div class="section-title">Kuis 🎯</div>
-    <div class="section-sub">Pilih jawaban yang benar!</div>
-    <div class="card quiz-container" id="quiz-area">
+    <div class="section-sub">Pilih jenis kuis, lalu mulai!</div>
+
+    <!-- MODE SELECTOR -->
+    <div id="quiz-mode-selector">
+      <div class="quiz-mode-grid">
+        <div class="quiz-mode-card" onclick="selectMode('hiragana')">
+          <div class="quiz-mode-icon">あ</div>
+          <div class="quiz-mode-name">Hiragana</div>
+          <div class="quiz-mode-desc">Tebak bacaan hiragana</div>
+        </div>
+        <div class="quiz-mode-card" onclick="selectMode('katakana')">
+          <div class="quiz-mode-icon">ア</div>
+          <div class="quiz-mode-name">Katakana</div>
+          <div class="quiz-mode-desc">Tebak bacaan katakana</div>
+        </div>
+        <div class="quiz-mode-card" onclick="selectMode('vocab')">
+          <div class="quiz-mode-icon">📖</div>
+          <div class="quiz-mode-name">Kosakata</div>
+          <div class="quiz-mode-desc">Tebak arti kata</div>
+        </div>
+        <div class="quiz-mode-card" onclick="selectMode('kanji')">
+          <div class="quiz-mode-icon">漢</div>
+          <div class="quiz-mode-name">Kanji</div>
+          <div class="quiz-mode-desc">Tebak arti kanji N5</div>
+        </div>
+        <div class="quiz-mode-card quiz-mode-all" onclick="selectMode('all')">
+          <div class="quiz-mode-icon">🌟</div>
+          <div class="quiz-mode-name">Semua</div>
+          <div class="quiz-mode-desc">Campuran semua jenis</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUIZ AREA -->
+    <div class="card quiz-container" id="quiz-area" style="display:none;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <span id="quiz-mode-badge" class="quiz-badge"></span>
+        <button onclick="backToModeSelect()" style="background:none;border:none;color:var(--muted);font-size:13px;font-weight:700;cursor:pointer;">← Ganti jenis</button>
+      </div>
       <div class="quiz-progress" id="quiz-progress"></div>
-      <div class="quiz-q" id="quiz-q">Apa artinya kata ini?</div>
+      <div class="quiz-q" id="quiz-q"></div>
       <div class="quiz-word" id="quiz-word"></div>
       <div class="quiz-options" id="quiz-options"></div>
       <div class="quiz-feedback" id="quiz-feedback"></div>
       <button class="next-btn" id="next-btn" onclick="nextQuestion()">Lanjut →</button>
     </div>
+
     <div class="quiz-result" id="quiz-result">
       <div class="result-emoji" id="result-emoji">🎉</div>
       <div class="result-score" id="result-score"></div>
       <div class="result-msg" id="result-msg"></div>
-      <button class="restart-btn" onclick="startQuiz()">Ulangi Kuis</button>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:4px;">
+        <button class="restart-btn" onclick="startQuiz()">Ulangi</button>
+        <button class="restart-btn" onclick="backToModeSelect()" style="background:linear-gradient(135deg,var(--navy),var(--dark));">Ganti Jenis</button>
+      </div>
     </div>
   </div>
 
@@ -955,29 +1286,109 @@
 <script>
 // ===== DATA =====
 const hiragana = [
-  {c:'あ',r:'a'},{c:'い',r:'i'},{c:'う',r:'u'},{c:'え',r:'e'},{c:'お',r:'o'},
-  {c:'か',r:'ka'},{c:'き',r:'ki'},{c:'く',r:'ku'},{c:'け',r:'ke'},{c:'こ',r:'ko'},
-  {c:'さ',r:'sa'},{c:'し',r:'shi'},{c:'す',r:'su'},{c:'せ',r:'se'},{c:'そ',r:'so'},
-  {c:'た',r:'ta'},{c:'ち',r:'chi'},{c:'つ',r:'tsu'},{c:'て',r:'te'},{c:'と',r:'to'},
-  {c:'な',r:'na'},{c:'に',r:'ni'},{c:'ぬ',r:'nu'},{c:'ね',r:'ne'},{c:'の',r:'no'},
-  {c:'は',r:'ha'},{c:'ひ',r:'hi'},{c:'ふ',r:'fu'},{c:'へ',r:'he'},{c:'ほ',r:'ho'},
-  {c:'ま',r:'ma'},{c:'み',r:'mi'},{c:'む',r:'mu'},{c:'め',r:'me'},{c:'も',r:'mo'},
-  {c:'や',r:'ya'},{c:'',r:''},{c:'ゆ',r:'yu'},{c:'',r:''},{c:'よ',r:'yo'},
-  {c:'ら',r:'ra'},{c:'り',r:'ri'},{c:'る',r:'ru'},{c:'れ',r:'re'},{c:'ろ',r:'ro'},
-  {c:'わ',r:'wa'},{c:'',r:''},{c:'を',r:'wo'},{c:'',r:''},{c:'ん',r:'n'},
+  {c:'あ',r:'a',  ex:'あめ',er:'ame',ei:'hujan'},
+  {c:'い',r:'i',  ex:'いぬ',er:'inu',ei:'anjing'},
+  {c:'う',r:'u',  ex:'うみ',er:'umi',ei:'laut'},
+  {c:'え',r:'e',  ex:'えき',er:'eki',ei:'stasiun'},
+  {c:'お',r:'o',  ex:'おかし',er:'okashi',ei:'kue'},
+  {c:'か',r:'ka', ex:'かさ',er:'kasa',ei:'payung'},
+  {c:'き',r:'ki', ex:'きって',er:'kitte',ei:'perangko'},
+  {c:'く',r:'ku', ex:'くるま',er:'kuruma',ei:'mobil'},
+  {c:'け',r:'ke', ex:'けが',er:'kega',ei:'luka'},
+  {c:'こ',r:'ko', ex:'こえ',er:'koe',ei:'suara'},
+  {c:'さ',r:'sa', ex:'さくら',er:'sakura',ei:'bunga sakura'},
+  {c:'し',r:'shi',ex:'しお',er:'shio',ei:'garam'},
+  {c:'す',r:'su', ex:'すし',er:'sushi',ei:'sushi'},
+  {c:'せ',r:'se', ex:'せんせい',er:'sensei',ei:'guru'},
+  {c:'そ',r:'so', ex:'そら',er:'sora',ei:'langit'},
+  {c:'た',r:'ta', ex:'たまご',er:'tamago',ei:'telur'},
+  {c:'ち',r:'chi',ex:'ちず',er:'chizu',ei:'peta'},
+  {c:'つ',r:'tsu',ex:'つき',er:'tsuki',ei:'bulan'},
+  {c:'て',r:'te', ex:'てがみ',er:'tegami',ei:'surat'},
+  {c:'と',r:'to', ex:'とり',er:'tori',ei:'burung'},
+  {c:'な',r:'na', ex:'なつ',er:'natsu',ei:'musim panas'},
+  {c:'に',r:'ni', ex:'にわ',er:'niwa',ei:'taman'},
+  {c:'ぬ',r:'nu', ex:'ぬの',er:'nuno',ei:'kain'},
+  {c:'ね',r:'ne', ex:'ねこ',er:'neko',ei:'kucing'},
+  {c:'の',r:'no', ex:'のり',er:'nori',ei:'rumput laut'},
+  {c:'は',r:'ha', ex:'はな',er:'hana',ei:'bunga'},
+  {c:'ひ',r:'hi', ex:'ひと',er:'hito',ei:'orang'},
+  {c:'ふ',r:'fu', ex:'ふね',er:'fune',ei:'kapal'},
+  {c:'へ',r:'he', ex:'へや',er:'heya',ei:'kamar'},
+  {c:'ほ',r:'ho', ex:'ほし',er:'hoshi',ei:'bintang'},
+  {c:'ま',r:'ma', ex:'まど',er:'mado',ei:'jendela'},
+  {c:'み',r:'mi', ex:'みず',er:'mizu',ei:'air'},
+  {c:'む',r:'mu', ex:'むし',er:'mushi',ei:'serangga'},
+  {c:'め',r:'me', ex:'めがね',er:'megane',ei:'kacamata'},
+  {c:'も',r:'mo', ex:'もり',er:'mori',ei:'hutan'},
+  {c:'や',r:'ya', ex:'やま',er:'yama',ei:'gunung'},
+  {c:'',r:''},
+  {c:'ゆ',r:'yu', ex:'ゆき',er:'yuki',ei:'salju'},
+  {c:'',r:''},
+  {c:'よ',r:'yo', ex:'よる',er:'yoru',ei:'malam'},
+  {c:'ら',r:'ra', ex:'らじお',er:'rajio',ei:'radio'},
+  {c:'り',r:'ri', ex:'りんご',er:'ringo',ei:'apel'},
+  {c:'る',r:'ru', ex:'るす',er:'rusu',ei:'tidak ada di rumah'},
+  {c:'れ',r:'re', ex:'れんしゅう',er:'renshuu',ei:'latihan'},
+  {c:'ろ',r:'ro', ex:'ろうか',er:'rouka',ei:'koridor'},
+  {c:'わ',r:'wa', ex:'わたし',er:'watashi',ei:'saya'},
+  {c:'',r:''},
+  {c:'を',r:'wo', ex:'(partikel objek)',er:'—',ei:'partikel を'},
+  {c:'',r:''},
+  {c:'ん',r:'n',  ex:'ほん',er:'hon',ei:'buku'},
 ];
 
 const katakana = [
-  {c:'ア',r:'a'},{c:'イ',r:'i'},{c:'ウ',r:'u'},{c:'エ',r:'e'},{c:'オ',r:'o'},
-  {c:'カ',r:'ka'},{c:'キ',r:'ki'},{c:'ク',r:'ku'},{c:'ケ',r:'ke'},{c:'コ',r:'ko'},
-  {c:'サ',r:'sa'},{c:'シ',r:'shi'},{c:'ス',r:'su'},{c:'セ',r:'se'},{c:'ソ',r:'so'},
-  {c:'タ',r:'ta'},{c:'チ',r:'chi'},{c:'ツ',r:'tsu'},{c:'テ',r:'te'},{c:'ト',r:'to'},
-  {c:'ナ',r:'na'},{c:'ニ',r:'ni'},{c:'ヌ',r:'nu'},{c:'ネ',r:'ne'},{c:'ノ',r:'no'},
-  {c:'ハ',r:'ha'},{c:'ヒ',r:'hi'},{c:'フ',r:'fu'},{c:'ヘ',r:'he'},{c:'ホ',r:'ho'},
-  {c:'マ',r:'ma'},{c:'ミ',r:'mi'},{c:'ム',r:'mu'},{c:'メ',r:'me'},{c:'モ',r:'mo'},
-  {c:'ヤ',r:'ya'},{c:'',r:''},{c:'ユ',r:'yu'},{c:'',r:''},{c:'ヨ',r:'yo'},
-  {c:'ラ',r:'ra'},{c:'リ',r:'ri'},{c:'ル',r:'ru'},{c:'レ',r:'re'},{c:'ロ',r:'ro'},
-  {c:'ワ',r:'wa'},{c:'',r:''},{c:'ヲ',r:'wo'},{c:'',r:''},{c:'ン',r:'n'},
+  {c:'ア',r:'a',  ex:'アイス',er:'aisu',ei:'es krim'},
+  {c:'イ',r:'i',  ex:'イタリア',er:'itaria',ei:'Italia'},
+  {c:'ウ',r:'u',  ex:'ウイルス',er:'uirusu',ei:'virus'},
+  {c:'エ',r:'e',  ex:'エアコン',er:'eakon',ei:'AC'},
+  {c:'オ',r:'o',  ex:'オレンジ',er:'orenji',ei:'jeruk'},
+  {c:'カ',r:'ka', ex:'カメラ',er:'kamera',ei:'kamera'},
+  {c:'キ',r:'ki', ex:'キッチン',er:'kicchin',ei:'dapur'},
+  {c:'ク',r:'ku', ex:'クラス',er:'kurasu',ei:'kelas'},
+  {c:'ケ',r:'ke', ex:'ケーキ',er:'keeki',ei:'kue'},
+  {c:'コ',r:'ko', ex:'コーヒー',er:'koohii',ei:'kopi'},
+  {c:'サ',r:'sa', ex:'サッカー',er:'sakkaa',ei:'sepak bola'},
+  {c:'シ',r:'shi',ex:'シャツ',er:'shatsu',ei:'kemeja'},
+  {c:'ス',r:'su', ex:'スポーツ',er:'supootsu',ei:'olahraga'},
+  {c:'セ',r:'se', ex:'セーター',er:'seetaa',ei:'sweater'},
+  {c:'ソ',r:'so', ex:'ソファ',er:'sofa',ei:'sofa'},
+  {c:'タ',r:'ta', ex:'タクシー',er:'takushii',ei:'taksi'},
+  {c:'チ',r:'chi',ex:'チョコ',er:'choko',ei:'coklat'},
+  {c:'ツ',r:'tsu',ex:'ツアー',er:'tsuaa',ei:'tur'},
+  {c:'テ',r:'te', ex:'テレビ',er:'terebi',ei:'televisi'},
+  {c:'ト',r:'to', ex:'トイレ',er:'toire',ei:'toilet'},
+  {c:'ナ',r:'na', ex:'ナイフ',er:'naifu',ei:'pisau'},
+  {c:'ニ',r:'ni', ex:'ニュース',er:'nyuusu',ei:'berita'},
+  {c:'ヌ',r:'nu', ex:'ヌードル',er:'nuudoru',ei:'mie'},
+  {c:'ネ',r:'ne', ex:'ネクタイ',er:'nekutai',ei:'dasi'},
+  {c:'ノ',r:'no', ex:'ノート',er:'nooto',ei:'buku catatan'},
+  {c:'ハ',r:'ha', ex:'ハンバーガー',er:'hanbaagaa',ei:'hamburger'},
+  {c:'ヒ',r:'hi', ex:'ヒーター',er:'hiitaa',ei:'pemanas'},
+  {c:'フ',r:'fu', ex:'フランス',er:'furansu',ei:'Prancis'},
+  {c:'ヘ',r:'he', ex:'ヘルメット',er:'herumetto',ei:'helm'},
+  {c:'ホ',r:'ho', ex:'ホテル',er:'hoteru',ei:'hotel'},
+  {c:'マ',r:'ma', ex:'マンゴー',er:'mangoo',ei:'mangga'},
+  {c:'ミ',r:'mi', ex:'ミルク',er:'miruku',ei:'susu'},
+  {c:'ム',r:'mu', ex:'ムード',er:'muudo',ei:'suasana'},
+  {c:'メ',r:'me', ex:'メニュー',er:'menyuu',ei:'menu'},
+  {c:'モ',r:'mo', ex:'モデル',er:'moderu',ei:'model'},
+  {c:'ヤ',r:'ya', ex:'ヤシ',er:'yashi',ei:'kelapa'},
+  {c:'',r:''},
+  {c:'ユ',r:'yu', ex:'ユニフォーム',er:'yunifoomu',ei:'seragam'},
+  {c:'',r:''},
+  {c:'ヨ',r:'yo', ex:'ヨーグルト',er:'yooguruto',ei:'yogurt'},
+  {c:'ラ',r:'ra', ex:'ラーメン',er:'raamen',ei:'ramen'},
+  {c:'リ',r:'ri', ex:'リモコン',er:'rimokon',ei:'remote'},
+  {c:'ル',r:'ru', ex:'ルーム',er:'ruumu',ei:'ruangan'},
+  {c:'レ',r:'re', ex:'レストラン',er:'resutoran',ei:'restoran'},
+  {c:'ロ',r:'ro', ex:'ロボット',er:'robotto',ei:'robot'},
+  {c:'ワ',r:'wa', ex:'ワイン',er:'wain',ei:'anggur'},
+  {c:'',r:''},
+  {c:'ヲ',r:'wo', ex:'(partikel objek)',er:'—',ei:'partikel ヲ'},
+  {c:'',r:''},
+  {c:'ン',r:'n',  ex:'パン',er:'pan',ei:'roti'},
 ];
 
 const vocabCategories = [
@@ -1121,19 +1532,172 @@ const dialogues = [
 ];
 
 const numbers = [
-  {n:1,jp:'一',r:'ichi',id:'satu'},
-  {n:2,jp:'二',r:'ni',id:'dua'},
-  {n:3,jp:'三',r:'san',id:'tiga'},
-  {n:4,jp:'四',r:'shi/yon',id:'empat'},
-  {n:5,jp:'五',r:'go',id:'lima'},
-  {n:6,jp:'六',r:'roku',id:'enam'},
-  {n:7,jp:'七',r:'nana/shichi',id:'tujuh'},
-  {n:8,jp:'八',r:'hachi',id:'delapan'},
-  {n:9,jp:'九',r:'ku/kyuu',id:'sembilan'},
-  {n:10,jp:'十',r:'juu',id:'sepuluh'},
-  {n:100,jp:'百',r:'hyaku',id:'seratus'},
-  {n:1000,jp:'千',r:'sen',id:'seribu'},
+  {n:1,  jp:'一',  r:'ichi',       id:'satu'},
+  {n:2,  jp:'二',  r:'ni',         id:'dua'},
+  {n:3,  jp:'三',  r:'san',        id:'tiga'},
+  {n:4,  jp:'四',  r:'shi / yon',  id:'empat'},
+  {n:5,  jp:'五',  r:'go',         id:'lima'},
+  {n:6,  jp:'六',  r:'roku',       id:'enam'},
+  {n:7,  jp:'七',  r:'nana / shichi', id:'tujuh'},
+  {n:8,  jp:'八',  r:'hachi',      id:'delapan'},
+  {n:9,  jp:'九',  r:'ku / kyuu',  id:'sembilan'},
+  {n:10, jp:'十',  r:'juu',        id:'sepuluh'},
+  {n:11, jp:'十一',r:'juu-ichi',   id:'sebelas'},
+  {n:12, jp:'十二',r:'juu-ni',     id:'dua belas'},
+  {n:13, jp:'十三',r:'juu-san',    id:'tiga belas'},
+  {n:14, jp:'十四',r:'juu-shi',    id:'empat belas'},
+  {n:15, jp:'十五',r:'juu-go',     id:'lima belas'},
+  {n:16, jp:'十六',r:'juu-roku',   id:'enam belas'},
+  {n:17, jp:'十七',r:'juu-nana',   id:'tujuh belas'},
+  {n:18, jp:'十八',r:'juu-hachi',  id:'delapan belas'},
+  {n:19, jp:'十九',r:'juu-ku',     id:'sembilan belas'},
+  {n:20, jp:'二十',r:'ni-juu',     id:'dua puluh'},
+  {n:30, jp:'三十',r:'san-juu',    id:'tiga puluh'},
+  {n:40, jp:'四十',r:'yon-juu',    id:'empat puluh'},
+  {n:50, jp:'五十',r:'go-juu',     id:'lima puluh'},
+  {n:60, jp:'六十',r:'roku-juu',   id:'enam puluh'},
+  {n:70, jp:'七十',r:'nana-juu',   id:'tujuh puluh'},
+  {n:80, jp:'八十',r:'hachi-juu',  id:'delapan puluh'},
+  {n:90, jp:'九十',r:'kyuu-juu',   id:'sembilan puluh'},
+  {n:100,jp:'百',  r:'hyaku',      id:'seratus'},
 ];
+
+const kanjiCategories = [
+  {
+    title:'🌿 自然 — Alam',
+    items:[
+      {k:'山',on:'サン',kun:'やま',id:'gunung',      ex:'山田',er:'Yamada',ei:'nama orang (Yamada)'},
+      {k:'川',on:'セン',kun:'かわ',id:'sungai',      ex:'川口',er:'Kawaguchi',ei:'nama tempat (Kawaguchi)'},
+      {k:'海',on:'カイ',kun:'うみ',id:'laut',        ex:'海外',er:'kaigai',ei:'luar negeri'},
+      {k:'空',on:'クウ',kun:'そら',id:'langit',      ex:'空港',er:'kuukou',ei:'bandara'},
+      {k:'雨',on:'ウ',kun:'あめ',id:'hujan',         ex:'大雨',er:'ooame',ei:'hujan lebat'},
+      {k:'火',on:'カ',kun:'ひ',id:'api',             ex:'火曜日',er:'kayoubi',ei:'hari Selasa'},
+      {k:'水',on:'スイ',kun:'みず',id:'air',         ex:'水曜日',er:'suiyoubi',ei:'hari Rabu'},
+      {k:'木',on:'モク',kun:'き',id:'pohon / kayu',  ex:'木曜日',er:'mokuyoubi',ei:'hari Kamis'},
+      {k:'土',on:'ド',kun:'つち',id:'tanah',         ex:'土曜日',er:'doyoubi',ei:'hari Sabtu'},
+      {k:'花',on:'カ',kun:'はな',id:'bunga',         ex:'花見',er:'hanami',ei:'melihat bunga sakura'},
+      {k:'石',on:'セキ',kun:'いし',id:'batu',        ex:'石川',er:'Ishikawa',ei:'nama tempat (Ishikawa)'},
+      {k:'金',on:'キン',kun:'かね',id:'emas / uang', ex:'金曜日',er:'kinyoubi',ei:'hari Jumat'},
+    ]
+  },
+  {
+    title:'👤 人・体 — Orang & Tubuh',
+    items:[
+      {k:'人',on:'ジン',kun:'ひと',id:'orang',       ex:'外国人',er:'gaikokujin',ei:'orang asing'},
+      {k:'女',on:'ジョ',kun:'おんな',id:'perempuan', ex:'女の人',er:'onna no hito',ei:'perempuan'},
+      {k:'男',on:'ダン',kun:'おとこ',id:'laki-laki', ex:'男の子',er:'otoko no ko',ei:'anak laki-laki'},
+      {k:'子',on:'シ',kun:'こ',id:'anak',            ex:'子ども',er:'kodomo',ei:'anak-anak'},
+      {k:'目',on:'モク',kun:'め',id:'mata',           ex:'目玉',er:'medama',ei:'bola mata'},
+      {k:'口',on:'コウ',kun:'くち',id:'mulut',        ex:'入口',er:'iriguchi',ei:'pintu masuk'},
+      {k:'手',on:'シュ',kun:'て',id:'tangan',         ex:'手紙',er:'tegami',ei:'surat'},
+      {k:'足',on:'ソク',kun:'あし',id:'kaki',         ex:'足音',er:'ashioto',ei:'suara langkah kaki'},
+      {k:'耳',on:'ジ',kun:'みみ',id:'telinga',        ex:'耳鼻科',er:'jibikaer',ei:'THT (klinik)'},
+      {k:'名',on:'メイ',kun:'な',id:'nama',           ex:'名前',er:'namae',ei:'nama'},
+    ]
+  },
+  {
+    title:'🏠 場所・方向 — Tempat & Arah',
+    items:[
+      {k:'上',on:'ジョウ',kun:'うえ',id:'atas',           ex:'上手',er:'jouzu',ei:'pandai / mahir'},
+      {k:'下',on:'カ',kun:'した',id:'bawah',              ex:'地下',er:'chika',ei:'bawah tanah'},
+      {k:'中',on:'チュウ',kun:'なか',id:'tengah / dalam', ex:'中学校',er:'chuugakkou',ei:'SMP'},
+      {k:'右',on:'ウ',kun:'みぎ',id:'kanan',              ex:'右手',er:'migite',ei:'tangan kanan'},
+      {k:'左',on:'サ',kun:'ひだり',id:'kiri',             ex:'左手',er:'hidarite',ei:'tangan kiri'},
+      {k:'外',on:'ガイ',kun:'そと',id:'luar',             ex:'外国',er:'gaikoku',ei:'negara asing'},
+      {k:'国',on:'コク',kun:'くに',id:'negara',           ex:'外国',er:'gaikoku',ei:'negara asing'},
+      {k:'東',on:'トウ',kun:'ひがし',id:'timur',          ex:'東京',er:'Toukyou',ei:'Tokyo'},
+      {k:'西',on:'セイ',kun:'にし',id:'barat',            ex:'西口',er:'nishiguchi',ei:'pintu barat'},
+      {k:'南',on:'ナン',kun:'みなみ',id:'selatan',        ex:'南口',er:'minamiguchi',ei:'pintu selatan'},
+      {k:'北',on:'ホク',kun:'きた',id:'utara',            ex:'北口',er:'kitaguchi',ei:'pintu utara'},
+      {k:'店',on:'テン',kun:'みせ',id:'toko',             ex:'店員',er:'ten-in',ei:'pegawai toko'},
+    ]
+  },
+  {
+    title:'📚 学校・生活 — Sekolah & Kehidupan',
+    items:[
+      {k:'学',on:'ガク',kun:'まな',id:'belajar',          ex:'学校',er:'gakkou',ei:'sekolah'},
+      {k:'校',on:'コウ',kun:'—',id:'sekolah',             ex:'高校',er:'koukou',ei:'SMA'},
+      {k:'先',on:'セン',kun:'さき',id:'duluan / guru',    ex:'先生',er:'sensei',ei:'guru'},
+      {k:'生',on:'セイ',kun:'い',id:'hidup / lahir',      ex:'学生',er:'gakusei',ei:'pelajar'},
+      {k:'本',on:'ホン',kun:'もと',id:'buku / asal',      ex:'日本語',er:'nihongo',ei:'bahasa Jepang'},
+      {k:'語',on:'ゴ',kun:'かた',id:'bahasa / kata',      ex:'日本語',er:'nihongo',ei:'bahasa Jepang'},
+      {k:'言',on:'ゲン',kun:'い',id:'berkata',            ex:'言葉',er:'kotoba',ei:'kata / bahasa'},
+      {k:'聞',on:'ブン',kun:'き',id:'mendengar',          ex:'新聞',er:'shinbun',ei:'koran'},
+      {k:'読',on:'ドク',kun:'よ',id:'membaca',            ex:'読書',er:'dokusho',ei:'membaca buku'},
+      {k:'書',on:'ショ',kun:'か',id:'menulis',            ex:'教科書',er:'kyoukasho',ei:'buku pelajaran'},
+      {k:'食',on:'ショク',kun:'た',id:'makan',            ex:'食堂',er:'shokudou',ei:'kantin'},
+      {k:'飲',on:'イン',kun:'の',id:'minum',              ex:'飲み物',er:'nomimono',ei:'minuman'},
+      {k:'見',on:'ケン',kun:'み',id:'melihat',            ex:'見学',er:'kengaku',ei:'kunjungan belajar'},
+      {k:'来',on:'ライ',kun:'く',id:'datang',             ex:'来週',er:'raishuu',ei:'minggu depan'},
+      {k:'行',on:'コウ',kun:'い',id:'pergi',              ex:'旅行',er:'ryokou',ei:'perjalanan / wisata'},
+      {k:'入',on:'ニュウ',kun:'い',id:'masuk',            ex:'入口',er:'iriguchi',ei:'pintu masuk'},
+      {k:'出',on:'シュツ',kun:'で',id:'keluar',           ex:'出口',er:'deguchi',ei:'pintu keluar'},
+      {k:'大',on:'ダイ',kun:'おお',id:'besar',            ex:'大学',er:'daigaku',ei:'universitas'},
+      {k:'小',on:'ショウ',kun:'ちい',id:'kecil',          ex:'小学校',er:'shougakkou',ei:'SD'},
+      {k:'新',on:'シン',kun:'あたら',id:'baru',           ex:'新聞',er:'shinbun',ei:'koran'},
+      {k:'古',on:'コ',kun:'ふる',id:'lama / tua',         ex:'古本',er:'furuhon',ei:'buku bekas'},
+      {k:'高',on:'コウ',kun:'たか',id:'tinggi / mahal',   ex:'高校',er:'koukou',ei:'SMA'},
+    ]
+  },
+];
+
+let learnedKanji = new Set();
+
+function renderKanji() {
+  document.getElementById('kanji-list').innerHTML = kanjiCategories.map(cat => `
+    <div class="kanji-category-title">${cat.title}</div>
+    <div class="kanji-grid">
+      ${cat.items.map((k, i) => {
+        const idx = kanjiCategories.flatMap(c=>c.items).indexOf(k);
+        return `
+        <div class="kanji-card ${learnedKanji.has(idx)?'learned':''}" onclick="toggleKanji(${idx})">
+          <span class="kanji-char">${k.k}</span>
+          <span class="kanji-on">音：${k.on}</span>
+          <span class="kanji-kun">訓：${k.kun}</span>
+          <span class="kanji-id">${k.id}</span>
+          <button class="kanji-speak" onclick="event.stopPropagation();speakJP('${k.k}')">🔊</button>
+          <button class="kanji-speak" style="margin-top:4px;font-size:11px;width:auto;padding:0 8px;border-radius:8px;" onclick="event.stopPropagation();showKanjiPopup(${idx})">例</button>
+        </div>`;
+      }).join('')}
+    </div>
+  `).join('');
+}
+
+function toggleKanji(idx) {
+  const allItems = kanjiCategories.flatMap(c => c.items);
+  if (learnedKanji.has(idx)) {
+    learnedKanji.delete(idx);
+  } else {
+    learnedKanji.add(idx);
+    showToast(`✅ ${allItems[idx].k} — ${allItems[idx].id} sudah dipelajari!`);
+  }
+  renderKanji();
+  updateStats();
+}
+
+function showKanjiPopup(idx) {
+  const k = kanjiCategories.flatMap(c => c.items)[idx];
+  const overlay = document.createElement('div');
+  overlay.className = 'kana-popup-overlay';
+  overlay.id = 'kana-popup-overlay';
+  overlay.onclick = (e) => { if (e.target === overlay) closeKanaPopup(); };
+  overlay.innerHTML = `
+    <div class="kana-popup">
+      <div class="kana-popup-char" style="color:#f97316">${k.k}</div>
+      <div class="kana-popup-rom" style="color:#f97316">${k.id}</div>
+      <div class="kana-popup-divider"></div>
+      <div class="kana-popup-label">📝 Contoh Kata</div>
+      <div class="kana-popup-ex">${k.ex}</div>
+      <div class="kana-popup-exrom">${k.er}</div>
+      <div class="kana-popup-exid">${k.ei}</div>
+      <div class="kana-popup-actions">
+        <button class="kana-popup-btn speak" onclick="speakJP('${k.ex}')">🔊 Dengarkan</button>
+        <button class="kana-popup-btn close" onclick="closeKanaPopup()">Tutup</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
 
 // ===== STATE =====
 let learned = new Set();
@@ -1151,6 +1715,7 @@ function renderKana() {
       <span class="kana-char">${k.c}</span>
       <span class="kana-rom">${k.r}</span>
       <button class="kana-speak" onclick="event.stopPropagation();speakJP('${k.c}')">🔊</button>
+      ${k.ex ? `<button class="kana-speak" style="margin-top:4px;font-size:11px;width:auto;padding:0 8px;border-radius:8px;" onclick="event.stopPropagation();showKanaPopup(${i},'hira')">例</button>` : ''}
     </div>
   ` : '<div></div>').join('');
 }
@@ -1162,6 +1727,7 @@ function renderKata() {
       <span class="kana-char">${k.c}</span>
       <span class="kana-rom">${k.r}</span>
       <button class="kana-speak" onclick="event.stopPropagation();speakJP('${k.c}')" style="color:#c026d3;background:rgba(192,38,211,0.1);">🔊</button>
+      ${k.ex ? `<button class="kana-speak" style="margin-top:4px;font-size:11px;width:auto;padding:0 8px;border-radius:8px;color:#c026d3;background:rgba(192,38,211,0.1);" onclick="event.stopPropagation();showKanaPopup(${i},'kata')">例</button>` : ''}
     </div>
   ` : '<div></div>').join('');
 }
@@ -1236,10 +1802,79 @@ function renderNumbers() {
 }
 
 // ===== QUIZ =====
+let quizMode = 'vocab';
+
+function selectMode(mode) {
+  quizMode = mode;
+  document.getElementById('quiz-mode-selector').style.display = 'none';
+  document.getElementById('quiz-result').classList.remove('show');
+  document.getElementById('quiz-area').style.display = '';
+
+  const badges = { hiragana:'あ Hiragana', katakana:'ア Katakana', vocab:'📖 Kosakata', kanji:'漢 Kanji', all:'🌟 Semua' };
+  document.getElementById('quiz-mode-badge').textContent = badges[mode];
+
+  startQuiz();
+}
+
+function backToModeSelect() {
+  document.getElementById('quiz-mode-selector').style.display = '';
+  document.getElementById('quiz-area').style.display = 'none';
+  document.getElementById('quiz-result').classList.remove('show');
+}
+
+function buildQuizPool(mode) {
+  if (mode === 'hiragana') {
+    const pool = hiragana.filter(k => k.c);
+    return shuffle(pool).slice(0, 10).map(k => ({
+      jp: k.c, answer: k.r,
+      allAnswers: hiragana.filter(x=>x.c).map(x=>x.r),
+      type: 'kana', question: 'Bacaan hiragana ini adalah?'
+    }));
+  }
+  if (mode === 'katakana') {
+    const pool = katakana.filter(k => k.c);
+    return shuffle(pool).slice(0, 10).map(k => ({
+      jp: k.c, answer: k.r,
+      allAnswers: katakana.filter(x=>x.c).map(x=>x.r),
+      type: 'kana', question: 'Bacaan katakana ini adalah?'
+    }));
+  }
+  if (mode === 'vocab') {
+    return shuffle([...vocab]).slice(0, 10).map(v => ({
+      jp: v.jp, answer: v.id,
+      allAnswers: vocab.map(x=>x.id),
+      type: 'vocab', question: 'Apa artinya kata ini?'
+    }));
+  }
+  if (mode === 'kanji') {
+    const allKanji = kanjiCategories.flatMap(c => c.items);
+    const allAnswers = allKanji.map(k => k.id);
+    return shuffle(allKanji).slice(0, 10).map(k => ({
+      jp: k.k, answer: k.id,
+      allAnswers,
+      type: 'kanji', question: 'Apa artinya kanji ini?'
+    }));
+  }
+  // all: mix of hiragana(3) + katakana(3) + vocab(3) + kanji(3) = 12
+  const hPool = shuffle(hiragana.filter(k=>k.c)).slice(0,3).map(k=>({
+    jp:k.c, answer:k.r, allAnswers:hiragana.filter(x=>x.c).map(x=>x.r), type:'kana', question:'Bacaan hiragana ini adalah?'
+  }));
+  const kaPool = shuffle(katakana.filter(k=>k.c)).slice(0,3).map(k=>({
+    jp:k.c, answer:k.r, allAnswers:katakana.filter(x=>x.c).map(x=>x.r), type:'kana', question:'Bacaan katakana ini adalah?'
+  }));
+  const vPool = shuffle([...vocab]).slice(0,3).map(v=>({
+    jp:v.jp, answer:v.id, allAnswers:vocab.map(x=>x.id), type:'vocab', question:'Apa artinya kata ini?'
+  }));
+  const kjPool = shuffle(kanjiCategories.flatMap(c=>c.items)).slice(0,3).map(k=>({
+    jp:k.k, answer:k.id, allAnswers:kanjiCategories.flatMap(c=>c.items).map(x=>x.id), type:'kanji', question:'Apa artinya kanji ini?'
+  }));
+  return shuffle([...hPool, ...kaPool, ...vPool, ...kjPool]);
+}
+
 function startQuiz() {
   document.getElementById('quiz-result').classList.remove('show');
   document.getElementById('quiz-area').style.display = '';
-  quizData = shuffle([...vocab]).slice(0, 8);
+  quizData = buildQuizPool(quizMode);
   qIdx = 0; score = 0; answered = false;
   renderQuestion();
   updateProgress();
@@ -1247,15 +1882,16 @@ function startQuiz() {
 
 function renderQuestion() {
   const q = quizData[qIdx];
+  document.getElementById('quiz-q').textContent = q.question;
   document.getElementById('quiz-word').textContent = q.jp;
   document.getElementById('quiz-feedback').classList.remove('show','good','bad');
   document.getElementById('next-btn').classList.remove('show');
 
-  const wrong = shuffle(vocab.filter(v => v.id !== q.id)).slice(0,3).map(v => v.id);
-  const opts = shuffle([q.id, ...wrong]);
+  const wrong = shuffle(q.allAnswers.filter(a => a !== q.answer)).slice(0,3);
+  const opts = shuffle([q.answer, ...wrong]);
 
   document.getElementById('quiz-options').innerHTML = opts.map(o => `
-    <button class="quiz-opt" onclick="checkAnswer(this,'${o.replace(/'/g,"\\'")}','${q.id.replace(/'/g,"\\'")}','${q.jp}')">${o}</button>
+    <button class="quiz-opt" onclick="checkAnswer(this,'${o.replace(/'/g,"\\'")}','${q.answer.replace(/'/g,"\\'")}','${q.jp}')">${o}</button>
   `).join('');
   answered = false;
 }
@@ -1358,8 +1994,39 @@ function toggleHideModeKata() {
   }
 }
 
+function showKanaPopup(i, type) {
+  const k = type === 'hira' ? hiragana[i] : katakana[i];
+  const accentColor = type === 'hira' ? 'var(--teal)' : '#c026d3';
+  const overlay = document.createElement('div');
+  overlay.className = 'kana-popup-overlay';
+  overlay.id = 'kana-popup-overlay';
+  overlay.onclick = (e) => { if (e.target === overlay) closeKanaPopup(); };
+  overlay.innerHTML = `
+    <div class="kana-popup">
+      <div class="kana-popup-char" style="color:${accentColor}">${k.c}</div>
+      <div class="kana-popup-rom">${k.r}</div>
+      <div class="kana-popup-divider"></div>
+      <div class="kana-popup-label">📝 Contoh Kata</div>
+      <div class="kana-popup-ex">${k.ex}</div>
+      <div class="kana-popup-exrom">${k.er}</div>
+      <div class="kana-popup-exid">${k.ei}</div>
+      <div class="kana-popup-actions">
+        <button class="kana-popup-btn speak" onclick="speakJP('${k.ex}')">🔊 Dengarkan</button>
+        <button class="kana-popup-btn close" onclick="closeKanaPopup()">Tutup</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+}
+
+function closeKanaPopup() {
+  const el = document.getElementById('kana-popup-overlay');
+  if (el) el.remove();
+}
+
+
 function updateStats() {
-  document.getElementById('stat-kana').textContent = learned.size + learnedKata.size;
+  document.getElementById('stat-kana').textContent = learned.size + learnedKata.size + learnedKanji.size;
   document.getElementById('stat-streak').textContent = quizStreak;
 }
 
@@ -1377,22 +2044,22 @@ function goTab(tab) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('sec-'+tab).classList.add('active');
   document.querySelectorAll('.tab-btn').forEach(b => {
-    if (b.textContent.includes({beranda:'Beranda',hiragana:'Hiragana',katakana:'Katakana',kosakata:'Kosakata',percakapan:'Percakapan',angka:'Angka',kuis:'Kuis'}[tab])) b.classList.add('active');
+    if (b.textContent.includes({beranda:'Beranda',hiragana:'Hiragana',katakana:'Katakana',kosakata:'Kosakata',percakapan:'Percakapan',angka:'Angka',kanji:'Kanji',kuis:'Kuis'}[tab])) b.classList.add('active');
   });
   if (tab === 'kuis') {
+    document.getElementById('quiz-mode-selector').style.display = '';
+    document.getElementById('quiz-area').style.display = 'none';
     document.getElementById('quiz-result').classList.remove('show');
-    document.getElementById('quiz-area').style.display = '';
-    startQuiz();
   }
 }
 
 // ===== INIT =====
 renderKana();
 renderKata();
+renderKanji();
 renderVocab();
 renderDialogues();
 renderNumbers();
-startQuiz();
 goTab('beranda');
 </script>
 </body>
