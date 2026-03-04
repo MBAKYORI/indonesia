@@ -66,30 +66,6 @@
     font-size: 18px;
   }
 
-  .xp-bar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--gold);
-  }
-
-  .xp-track {
-    width: 120px;
-    height: 10px;
-    background: rgba(255,255,255,0.15);
-    border-radius: 10px;
-    overflow: hidden;
-  }
-
-  .xp-fill {
-    height: 100%;
-    background: linear-gradient(90deg, var(--gold), #ffcc02);
-    border-radius: 10px;
-    transition: width 0.5s ease;
-  }
-
   /* ====== NAV ====== */
   nav {
     background: white;
@@ -237,6 +213,24 @@
   .kana-speak:hover { background: var(--teal); color: white; transform: scale(1.15); }
   .kana-card.learned .kana-speak { background: rgba(255,255,255,0.2); color: white; }
   .kana-card.learned .kana-speak:hover { background: rgba(255,255,255,0.4); }
+
+  /* Hidden mode */
+  .hide-mode .kana-char {
+    color: transparent;
+    background: #e0e0e0;
+    border-radius: 8px;
+    user-select: none;
+    transition: color 0.2s, background 0.2s;
+  }
+  .hide-mode .kana-card:hover .kana-char,
+  .hide-mode .kana-card:focus .kana-char {
+    color: var(--dark);
+    background: transparent;
+  }
+  .hide-mode .kana-card.learned .kana-char {
+    color: white;
+    background: transparent;
+  }
 
   .bubble-speak {
     display: inline-flex;
@@ -803,12 +797,7 @@
     <div class="logo-icon">🇯🇵</div>
     Nihongo Belajar
   </div>
-  <div class="xp-bar">
-    ⭐ <span id="xp-val">0</span> XP
-    <div class="xp-track">
-      <div class="xp-fill" id="xp-fill" style="width:0%"></div>
-    </div>
-  </div>
+
 </header>
 
 <nav>
@@ -830,11 +819,7 @@
       <div class="banner-stats">
         <div class="stat-item">
           <span class="stat-num" id="stat-kana">0</span>
-          <span class="stat-label">Hiragana</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-num" id="stat-xp">0</span>
-          <span class="stat-label">XP</span>
+          <span class="stat-label">Hiragana dipelajari</span>
         </div>
         <div class="stat-item">
           <span class="stat-num" id="stat-streak">0</span>
@@ -875,7 +860,15 @@
   <div class="section" id="sec-hiragana">
     <div class="section-title">Hiragana あいうえお</div>
     <div class="section-sub">Ketuk karakter untuk menandai sudah dipelajari ✅</div>
-    <div class="label">💡 Tips: Pelajari baris per baris!</div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+      <div class="label">💡 Tips: Pelajari baris per baris!</div>
+      <div style="display:flex;align-items:center;gap:8px;background:white;border-radius:50px;padding:8px 16px;box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+        <span style="font-size:13px;font-weight:700;color:var(--muted);">Sembunyikan karakter</span>
+        <div id="hide-toggle" onclick="toggleHideMode()" style="width:44px;height:24px;background:#e0e0e0;border-radius:12px;cursor:pointer;position:relative;transition:background 0.3s;">
+          <div id="hide-knob" style="width:20px;height:20px;background:white;border-radius:50%;position:absolute;top:2px;left:2px;transition:left 0.3s;box-shadow:0 2px 6px rgba(0,0,0,0.2);"></div>
+        </div>
+      </div>
+    </div>
     <div class="kana-grid" id="kana-grid"></div>
   </div>
 
@@ -1014,8 +1007,8 @@ const numbers = [
 
 // ===== STATE =====
 let learned = new Set();
-let xp = 0;
 let quizStreak = 0;
+let hideMode = false;
 let quizData = [], qIdx = 0, score = 0, answered = false;
 
 // ===== RENDER =====
@@ -1035,8 +1028,7 @@ function toggleLearn(i) {
     learned.delete(i);
   } else {
     learned.add(i);
-    addXP(5);
-    showToast(`✅ ${hiragana[i].c} (${hiragana[i].r}) sudah dipelajari! +5 XP`);
+    showToast(`✅ ${hiragana[i].c} (${hiragana[i].r}) sudah dipelajari!`);
   }
   renderKana();
   updateStats();
@@ -1119,11 +1111,10 @@ function checkAnswer(btn, chosen, correct, jp) {
   const fb = document.getElementById('quiz-feedback');
   if (chosen === correct) {
     btn.classList.add('correct');
-    fb.textContent = '✅ Benar! Bagus sekali! +10 XP';
+    fb.textContent = '✅ Benar! Bagus sekali!';
     fb.classList.add('show','good');
     score++;
     quizStreak++;
-    addXP(10);
     speakJP(jp);
   } else {
     btn.classList.add('wrong');
@@ -1178,16 +1169,24 @@ function speakJP(text) {
   speechSynthesis.speak(u);
 }
 
-function addXP(amount) {
-  xp += amount;
-  document.getElementById('xp-val').textContent = xp;
-  const fill = Math.min((xp % 100), 100);
-  document.getElementById('xp-fill').style.width = fill + '%';
+function toggleHideMode() {
+  hideMode = !hideMode;
+  const grid = document.getElementById('kana-grid');
+  const toggle = document.getElementById('hide-toggle');
+  const knob = document.getElementById('hide-knob');
+  if (hideMode) {
+    grid.classList.add('hide-mode');
+    toggle.style.background = 'var(--teal)';
+    knob.style.left = '22px';
+  } else {
+    grid.classList.remove('hide-mode');
+    toggle.style.background = '#e0e0e0';
+    knob.style.left = '2px';
+  }
 }
 
 function updateStats() {
   document.getElementById('stat-kana').textContent = learned.size;
-  document.getElementById('stat-xp').textContent = xp;
   document.getElementById('stat-streak').textContent = quizStreak;
 }
 
