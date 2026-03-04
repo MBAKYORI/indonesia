@@ -471,7 +471,9 @@
   .quiz-mode-card:nth-child(2) { border-top: 4px solid #c026d3; }
   .quiz-mode-card:nth-child(3) { border-top: 4px solid var(--gold); }
   .quiz-mode-card:nth-child(4) { border-top: 4px solid #f97316; }
-  .quiz-mode-all { border-top: 4px solid var(--red) !important; grid-column: 1 / -1; }
+  .quiz-mode-card:nth-child(5) { border-top: 4px solid #6366f1; }
+  .quiz-mode-card:nth-child(6) { border-top: 4px solid var(--red); }
+  .quiz-mode-all { border-top: 4px solid #14b8a6 !important; grid-column: 1 / -1; }
 
   .quiz-mode-icon {
     font-family: 'Zen Maru Gothic', sans-serif;
@@ -1078,6 +1080,94 @@
   .kanji-speak:hover { background: #f97316; color: white; transform: scale(1.15); }
   .kanji-card.learned .kanji-speak { background: rgba(255,255,255,0.2); color: white; }
   .kanji-card.learned .kanji-speak:hover { background: rgba(255,255,255,0.4); }
+
+  /* ====== 語順クイズ ====== */
+  .word-order-area {
+    min-height: 64px;
+    border: 2px dashed #d0d0d0;
+    border-radius: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 14px;
+    margin: 16px 0;
+    align-items: center;
+    background: #fafafa;
+    transition: border-color 0.2s;
+  }
+  .word-order-area.has-words { border-color: var(--teal); background: #f0faf9; }
+
+  .word-chip {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    padding: 10px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.18s;
+    user-select: none;
+  }
+  .word-chip.source {
+    background: white;
+    border-color: #e0e0e0;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    color: var(--dark);
+  }
+  .word-chip.source:hover { border-color: var(--red); transform: translateY(-2px); }
+  .word-chip.placed {
+    background: var(--teal);
+    color: white;
+    box-shadow: 0 4px 12px rgba(15,157,143,0.3);
+  }
+  .word-chip.placed:hover { background: #0c8a7d; }
+  .word-chip.correct-chip { background: #22c55e; color: white; }
+  .word-chip.wrong-chip  { background: #ef4444; color: white; }
+
+  .word-source-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 8px 0 20px;
+    min-height: 48px;
+  }
+
+  .order-label {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+  }
+
+  /* ====== 助詞クイズ ====== */
+  .particle-sentence {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--dark);
+    text-align: center;
+    line-height: 1.6;
+    margin: 20px 0 8px;
+  }
+
+  .particle-blank {
+    display: inline-block;
+    min-width: 52px;
+    border-bottom: 3px solid var(--red);
+    color: var(--red);
+    text-align: center;
+    padding: 0 6px;
+  }
+
+  .particle-translation {
+    font-size: 14px;
+    color: var(--muted);
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 20px;
+  }
 </style>
 </head>
 <body>
@@ -1246,6 +1336,16 @@
           <div class="quiz-mode-name">Kanji</div>
           <div class="quiz-mode-desc">Tebak arti kanji N5</div>
         </div>
+        <div class="quiz-mode-card" onclick="selectMode('word-order')">
+          <div class="quiz-mode-icon">🔀</div>
+          <div class="quiz-mode-name">Susun Kalimat</div>
+          <div class="quiz-mode-desc">Urutkan kata jadi kalimat</div>
+        </div>
+        <div class="quiz-mode-card" onclick="selectMode('particle')">
+          <div class="quiz-mode-icon">は</div>
+          <div class="quiz-mode-name">Partikel</div>
+          <div class="quiz-mode-desc">Pilih は・を・に・へ yang tepat</div>
+        </div>
         <div class="quiz-mode-card quiz-mode-all" onclick="selectMode('all')">
           <div class="quiz-mode-icon">🌟</div>
           <div class="quiz-mode-name">Semua</div>
@@ -1262,8 +1362,35 @@
       </div>
       <div class="quiz-progress" id="quiz-progress"></div>
       <div class="quiz-q" id="quiz-q"></div>
-      <div class="quiz-word" id="quiz-word"></div>
-      <div class="quiz-options" id="quiz-options"></div>
+
+      <!-- Standard quiz (vocab/kana/kanji) -->
+      <div id="standard-quiz-area">
+        <div class="quiz-word" id="quiz-word"></div>
+        <div class="quiz-options" id="quiz-options"></div>
+      </div>
+
+      <!-- Word-order quiz -->
+      <div id="word-order-quiz-area" style="display:none;">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px;">
+          <div class="order-label" style="margin-bottom:0;">📝 Susun kalimat di sini:</div>
+          <button id="wo-speak-btn" onclick="speakJP(woQuestion&&woQuestion.answer)" style="background:var(--warm);border:none;border-radius:50px;padding:6px 14px;font-size:13px;font-weight:800;cursor:pointer;color:var(--dark);display:flex;align-items:center;gap:5px;">🔊 Dengarkan</button>
+        </div>
+        <div class="word-order-area" id="answer-slots" onclick="handleSlotClick(event)"></div>
+        <div class="order-label">🃏 Kata-kata:</div>
+        <div class="word-source-area" id="word-chips"></div>
+        <button class="next-btn" id="order-check-btn" onclick="checkWordOrder()" style="display:inline-flex;margin-top:4px;">✅ Cek Jawaban</button>
+      </div>
+
+      <!-- Particle quiz -->
+      <div id="particle-quiz-area" style="display:none;">
+        <div class="particle-sentence" id="particle-sentence"></div>
+        <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:6px;">
+          <div class="particle-translation" id="particle-translation" style="margin-bottom:0;"></div>
+          <button id="particle-speak-btn" onclick="speakCurrentParticle()" style="background:var(--warm);border:none;border-radius:50px;padding:6px 14px;font-size:13px;font-weight:800;cursor:pointer;color:var(--dark);display:flex;align-items:center;gap:5px;flex-shrink:0;">🔊</button>
+        </div>
+        <div class="quiz-options" id="particle-options"></div>
+      </div>
+
       <div class="quiz-feedback" id="quiz-feedback"></div>
       <button class="next-btn" id="next-btn" onclick="nextQuestion()">Lanjut →</button>
     </div>
@@ -1562,6 +1689,174 @@ const numbers = [
   {n:100,jp:'百',  r:'hyaku',      id:'seratus'},
 ];
 
+const wordOrderQuestions = [
+  { words:['わたしは','がくせいです'], answer:'わたしは がくせいです', trans:'Saya adalah pelajar.' },
+  { words:['これは','ほんです'], answer:'これは ほんです', trans:'Ini adalah buku.' },
+  { words:['わたしは','まいにち','にほんごを','べんきょうします'], answer:'わたしは まいにち にほんごを べんきょうします', trans:'Saya belajar bahasa Jepang setiap hari.' },
+  { words:['あしたは','がっこうへ','いきます'], answer:'あしたは がっこうへ いきます', trans:'Besok pergi ke sekolah.' },
+  { words:['わたしは','みずを','のみます'], answer:'わたしは みずを のみます', trans:'Saya minum air.' },
+  { words:['ここは','としょかんです'], answer:'ここは としょかんです', trans:'Di sini adalah perpustakaan.' },
+  { words:['にほんごは','おもしろいです'], answer:'にほんごは おもしろいです', trans:'Bahasa Jepang itu menarik.' },
+  { words:['わたしは','すしが','すきです'], answer:'わたしは すしが すきです', trans:'Saya suka sushi.' },
+  { words:['かれは','まいあさ','こうえんで','はしります'], answer:'かれは まいあさ こうえんで はしります', trans:'Dia berlari di taman setiap pagi.' },
+  { words:['えきは','どこですか'], answer:'えきは どこですか', trans:'Di mana stasiun?' },
+];
+
+const particleQuestions = [
+  { before:'わたし', after:'がくせいです。', answer:'は', choices:['は','を','に'], trans:'Saya adalah pelajar.' },
+  { before:'りんご', after:'たべます。', answer:'を', choices:['は','を','へ'], trans:'(Saya) makan apel.' },
+  { before:'がっこう', after:'いきます。', answer:'へ', choices:['は','を','へ'], trans:'(Saya) pergi ke sekolah.' },
+  { before:'ともだち', after:'でんわします。', answer:'に', choices:['は','に','を'], trans:'(Saya) menelepon teman.' },
+  { before:'にほんご', after:'べんきょうします。', answer:'を', choices:['を','は','で'], trans:'(Saya) belajar bahasa Jepang.' },
+  { before:'ここ', after:'としょかんです。', answer:'は', choices:['は','を','に'], trans:'Di sini adalah perpustakaan.' },
+  { before:'バス', after:'えきへいきます。', answer:'で', choices:['で','は','が'], trans:'(Saya) pergi ke stasiun dengan bus.' },
+  { before:'すし', after:'すきです。', answer:'が', choices:['が','は','を'], trans:'(Saya) suka sushi.' },
+  { before:'としょかん', after:'ほんをよみます。', answer:'で', choices:['で','に','へ'], trans:'(Saya) membaca buku di perpustakaan.' },
+  { before:'いぬ', after:'かわいいです。', answer:'は', choices:['は','が','を'], trans:'Anjing itu lucu.' },
+  { before:'でんしゃ', after:'のります。', answer:'に', choices:['に','を','へ'], trans:'(Saya) naik kereta.' },
+  { before:'あした', after:'やすみです。', answer:'は', choices:['は','を','が'], trans:'Besok adalah hari libur.' },
+];
+
+// ===== WORD ORDER STATE =====
+let woQuestion = null, woPlaced = [], woAnswered = false;
+
+function renderWordOrderQuestion(q) {
+  woQuestion = q;
+  woPlaced = [];
+  woAnswered = false;
+  document.getElementById('quiz-q').textContent = '🔀 Urutkan kata-kata berikut menjadi kalimat yang benar!';
+  document.getElementById('answer-slots').innerHTML = '';
+  document.getElementById('answer-slots').classList.remove('has-words');
+  document.getElementById('order-check-btn').style.display = 'inline-flex';
+  document.getElementById('order-check-btn').disabled = false;
+  document.getElementById('quiz-feedback').classList.remove('show','good','bad');
+  document.getElementById('next-btn').classList.remove('show');
+
+  const shuffled = shuffle([...q.words]);
+  document.getElementById('word-chips').innerHTML = shuffled.map((w,i) =>
+    `<div class="word-chip source" data-word="${w}" data-idx="${i}" onclick="placeWord(this)">${w}</div>`
+  ).join('');
+}
+
+function placeWord(el) {
+  if (woAnswered) return;
+  if (el.classList.contains('placed')) {
+    // remove from placed
+    woPlaced = woPlaced.filter(w => w !== el.dataset.word + '__' + el.dataset.idx);
+    el.classList.remove('placed');
+    el.classList.add('source');
+    el.onclick = () => placeWord(el);
+    updateSlots();
+    return;
+  }
+  const key = el.dataset.word + '__' + el.dataset.idx;
+  woPlaced.push(key);
+  el.classList.remove('source');
+  el.classList.add('placed');
+  updateSlots();
+}
+
+function updateSlots() {
+  const slots = document.getElementById('answer-slots');
+  slots.innerHTML = woPlaced.map(key => {
+    const word = key.split('__')[0];
+    const idx  = key.split('__')[1];
+    return `<div class="word-chip placed" data-word="${word}" data-idx="${idx}" onclick="removePlaced(this)">${word}</div>`;
+  }).join('');
+  slots.classList.toggle('has-words', woPlaced.length > 0);
+}
+
+function removePlaced(el) {
+  if (woAnswered) return;
+  const key = el.dataset.word + '__' + el.dataset.idx;
+  woPlaced = woPlaced.filter(k => k !== key);
+  // restore source chip
+  document.querySelectorAll('#word-chips .word-chip').forEach(chip => {
+    if (chip.dataset.word === el.dataset.word && chip.dataset.idx === el.dataset.idx) {
+      chip.classList.remove('placed');
+      chip.classList.add('source');
+    }
+  });
+  updateSlots();
+}
+
+function handleSlotClick(e) {
+  const chip = e.target.closest('.word-chip');
+  if (chip) removePlaced(chip);
+}
+
+function checkWordOrder() {
+  if (woAnswered) return;
+  const answer = woPlaced.map(k => k.split('__')[0]).join(' ');
+  const correct = woQuestion.answer;
+  woAnswered = true;
+  document.getElementById('order-check-btn').disabled = true;
+  const fb = document.getElementById('quiz-feedback');
+  const slots = document.getElementById('answer-slots');
+
+  if (answer === correct) {
+    slots.querySelectorAll('.word-chip').forEach(c => { c.classList.remove('placed'); c.classList.add('correct-chip'); });
+    fb.textContent = '✅ Benar! Bagus sekali!';
+    fb.classList.add('show','good');
+    score++; quizStreak++;
+    speakJP(correct);
+  } else {
+    slots.querySelectorAll('.word-chip').forEach(c => { c.classList.remove('placed'); c.classList.add('wrong-chip'); });
+    fb.innerHTML = `❌ Salah.<br><span style="font-family:'Zen Maru Gothic';font-size:18px;font-weight:900;">${correct}</span><br><small>${woQuestion.trans}</small>`;
+    fb.classList.add('show','bad');
+    quizStreak = 0;
+  }
+  document.getElementById('next-btn').classList.add('show');
+  updateStats();
+}
+
+let currentParticleFull = '';
+
+function speakCurrentParticle() { if (currentParticleFull) speakJP(currentParticleFull); }
+
+function renderParticleQuestion(q) {
+  currentParticleFull = q.before + q.answer + q.after;
+  document.getElementById('quiz-q').textContent = '🔤 Pilih partikel yang tepat untuk mengisi titik-titik!';
+  document.getElementById('particle-sentence').innerHTML =
+    `${q.before}<span class="particle-blank">　　</span>${q.after}`;
+  document.getElementById('particle-translation').textContent = q.trans;
+  document.getElementById('quiz-feedback').classList.remove('show','good','bad');
+  document.getElementById('next-btn').classList.remove('show');
+
+  document.getElementById('particle-options').innerHTML = q.choices.map(c => `
+    <button class="quiz-opt" style="font-family:'Zen Maru Gothic',sans-serif;font-size:22px;"
+      onclick="checkParticle(this,'${c}','${q.answer}','${q.before}${q.answer}${q.after}')">${c}</button>
+  `).join('');
+  answered = false;
+}
+
+function checkParticle(btn, chosen, correct, full) {
+  if (answered) return;
+  answered = true;
+  document.querySelectorAll('#particle-options .quiz-opt').forEach(b => b.disabled = true);
+  const fb = document.getElementById('quiz-feedback');
+  // fill in blank with correct particle after answer
+  const cur = quizData[qIdx].data;
+  document.getElementById('particle-sentence').innerHTML =
+    `${cur.before}<span class="particle-blank" style="color:${chosen===correct?'#22c55e':'#ef4444'}">${chosen}</span>${cur.after}`;
+  if (chosen === correct) {
+    btn.classList.add('correct');
+    fb.textContent = '✅ Benar! Bagus sekali!';
+    fb.classList.add('show','good');
+    score++; quizStreak++;
+    speakJP(full);
+  } else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('#particle-options .quiz-opt').forEach(b => {
+      if (b.textContent === correct) b.classList.add('correct');
+    });
+    fb.textContent = `❌ Salah. Partikel yang benar: 「${correct}」`;
+    fb.classList.add('show','bad');
+    quizStreak = 0;
+  }
+  document.getElementById('next-btn').classList.add('show');
+  updateStats();
+}
 const kanjiCategories = [
   {
     title:'🌿 自然 — Alam',
@@ -1810,8 +2105,15 @@ function selectMode(mode) {
   document.getElementById('quiz-result').classList.remove('show');
   document.getElementById('quiz-area').style.display = '';
 
-  const badges = { hiragana:'あ Hiragana', katakana:'ア Katakana', vocab:'📖 Kosakata', kanji:'漢 Kanji', all:'🌟 Semua' };
+  const badges = { hiragana:'あ Hiragana', katakana:'ア Katakana', vocab:'📖 Kosakata', kanji:'漢 Kanji', 'word-order':'🔀 Susun Kalimat', particle:'は Partikel', all:'🌟 Semua' };
   document.getElementById('quiz-mode-badge').textContent = badges[mode];
+
+  // Show/hide sub-areas
+  const isWordOrder = mode === 'word-order';
+  const isParticle  = mode === 'particle';
+  document.getElementById('standard-quiz-area').style.display  = (isWordOrder || isParticle) ? 'none' : '';
+  document.getElementById('word-order-quiz-area').style.display = isWordOrder ? '' : 'none';
+  document.getElementById('particle-quiz-area').style.display   = isParticle  ? '' : 'none';
 
   startQuiz();
 }
@@ -1845,6 +2147,12 @@ function buildQuizPool(mode) {
       allAnswers: vocab.map(x=>x.id),
       type: 'vocab', question: 'Apa artinya kata ini?'
     }));
+  }
+  if (mode === 'word-order') {
+    return shuffle([...wordOrderQuestions]).slice(0, 8).map(q => ({ type:'word-order', data:q }));
+  }
+  if (mode === 'particle') {
+    return shuffle([...particleQuestions]).slice(0, 10).map(q => ({ type:'particle', data:q }));
   }
   if (mode === 'kanji') {
     const allKanji = kanjiCategories.flatMap(c => c.items);
@@ -1882,14 +2190,31 @@ function startQuiz() {
 
 function renderQuestion() {
   const q = quizData[qIdx];
-  document.getElementById('quiz-q').textContent = q.question;
-  document.getElementById('quiz-word').textContent = q.jp;
   document.getElementById('quiz-feedback').classList.remove('show','good','bad');
   document.getElementById('next-btn').classList.remove('show');
 
+  // Show/hide sub-areas
+  const isWordOrder = q.type === 'word-order';
+  const isParticle  = q.type === 'particle';
+  document.getElementById('standard-quiz-area').style.display   = (isWordOrder || isParticle) ? 'none' : '';
+  document.getElementById('word-order-quiz-area').style.display  = isWordOrder ? '' : 'none';
+  document.getElementById('particle-quiz-area').style.display    = isParticle  ? '' : 'none';
+
+  if (isWordOrder) {
+    renderWordOrderQuestion(q.data);
+    return;
+  }
+  if (isParticle) {
+    woQuestion = null; // clear word-order state
+    renderParticleQuestion(q.data);
+    return;
+  }
+
+  // Standard
+  document.getElementById('quiz-q').textContent = q.question;
+  document.getElementById('quiz-word').textContent = q.jp;
   const wrong = shuffle(q.allAnswers.filter(a => a !== q.answer)).slice(0,3);
   const opts = shuffle([q.answer, ...wrong]);
-
   document.getElementById('quiz-options').innerHTML = opts.map(o => `
     <button class="quiz-opt" onclick="checkAnswer(this,'${o.replace(/'/g,"\\'")}','${q.answer.replace(/'/g,"\\'")}','${q.jp}')">${o}</button>
   `).join('');
@@ -1953,13 +2278,42 @@ function showResult() {
 // ===== UTILS =====
 function shuffle(a) { return [...a].sort(() => Math.random()-0.5); }
 
+// ===== SPEECH =====
+let _jpVoice = null;
+
+function getBestJPVoice() {
+  if (_jpVoice) return _jpVoice;
+  const voices = speechSynthesis.getVoices();
+  // Priority: Google/Microsoft/Apple premium JP voices first
+  const priority = [
+    v => v.name.includes('Google') && v.lang.startsWith('ja'),
+    v => v.name.includes('Microsoft') && v.lang.startsWith('ja'),
+    v => v.name.includes('Kyoko') || v.name.includes('Otoya') || v.name.includes('O-ren'),
+    v => v.lang === 'ja-JP',
+    v => v.lang.startsWith('ja'),
+  ];
+  for (const fn of priority) {
+    const found = voices.find(fn);
+    if (found) { _jpVoice = found; return found; }
+  }
+  return null;
+}
+
 function speakJP(text) {
   if (!window.speechSynthesis) return;
+  speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
   u.lang = 'ja-JP';
-  u.rate = 0.85;
-  speechSynthesis.cancel();
+  u.rate = 0.82;
+  u.pitch = 1.05;
+  const voice = getBestJPVoice();
+  if (voice) u.voice = voice;
   speechSynthesis.speak(u);
+}
+
+// Reload voice cache when voices change (Chrome loads async)
+if (window.speechSynthesis) {
+  speechSynthesis.onvoiceschanged = () => { _jpVoice = null; getBestJPVoice(); };
 }
 
 function toggleHideMode() {
