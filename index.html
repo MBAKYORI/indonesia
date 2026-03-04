@@ -315,6 +315,19 @@
     transform: scale(1.1);
   }
 
+  .vocab-category-title {
+    font-family: 'Zen Maru Gothic', sans-serif;
+    font-size: 16px;
+    font-weight: 900;
+    color: var(--dark);
+    margin: 28px 0 12px;
+    padding-left: 14px;
+    border-left: 4px solid var(--red);
+    line-height: 1.3;
+  }
+
+  .vocab-category-title:first-child { margin-top: 0; }
+
   /* ====== KUIS ====== */
   .quiz-container {
     text-align: center;
@@ -803,6 +816,7 @@
 <nav>
   <button class="tab-btn active" onclick="goTab('beranda')">🏠 Beranda</button>
   <button class="tab-btn" onclick="goTab('hiragana')">あ Hiragana</button>
+  <button class="tab-btn" onclick="goTab('katakana')">ア Katakana</button>
   <button class="tab-btn" onclick="goTab('kosakata')">📖 Kosakata</button>
   <button class="tab-btn" onclick="goTab('percakapan')">💬 Percakapan</button>
   <button class="tab-btn" onclick="goTab('angka')">🔢 Angka</button>
@@ -819,7 +833,7 @@
       <div class="banner-stats">
         <div class="stat-item">
           <span class="stat-num" id="stat-kana">0</span>
-          <span class="stat-label">Hiragana dipelajari</span>
+          <span class="stat-label">Karakter dipelajari</span>
         </div>
         <div class="stat-item">
           <span class="stat-num" id="stat-streak">0</span>
@@ -832,6 +846,11 @@
         <div class="menu-icon">あ</div>
         <div class="menu-name">Hiragana</div>
         <div class="menu-desc">Pelajari 46 karakter dasar</div>
+      </div>
+      <div class="menu-card" data-tab="katakana" onclick="goTab('katakana')" style="border-top:4px solid #f472b6;">
+        <div class="menu-icon">ア</div>
+        <div class="menu-name">Katakana</div>
+        <div class="menu-desc">46 karakter untuk kata serapan</div>
       </div>
       <div class="menu-card" data-tab="kosakata" onclick="goTab('kosakata')">
         <div class="menu-icon">📖</div>
@@ -870,6 +889,22 @@
       </div>
     </div>
     <div class="kana-grid" id="kana-grid"></div>
+  </div>
+
+  <!-- KATAKANA -->
+  <div class="section" id="sec-katakana">
+    <div class="section-title">Katakana アイウエオ</div>
+    <div class="section-sub">Digunakan untuk kata serapan &amp; nama asing ✅</div>
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+      <div class="label">💡 Tips: Mirip Hiragana, tapi lebih kaku!</div>
+      <div style="display:flex;align-items:center;gap:8px;background:white;border-radius:50px;padding:8px 16px;box-shadow:0 4px 12px rgba(0,0,0,0.08);">
+        <span style="font-size:13px;font-weight:700;color:var(--muted);">Sembunyikan karakter</span>
+        <div id="hide-toggle-kata" onclick="toggleHideModeKata()" style="width:44px;height:24px;background:#e0e0e0;border-radius:12px;cursor:pointer;position:relative;transition:background 0.3s;">
+          <div id="hide-knob-kata" style="width:20px;height:20px;background:white;border-radius:50%;position:absolute;top:2px;left:2px;transition:left 0.3s;box-shadow:0 2px 6px rgba(0,0,0,0.2);"></div>
+        </div>
+      </div>
+    </div>
+    <div class="kana-grid" id="kata-grid"></div>
   </div>
 
   <!-- KOSAKATA -->
@@ -932,24 +967,119 @@ const hiragana = [
   {c:'わ',r:'wa'},{c:'',r:''},{c:'を',r:'wo'},{c:'',r:''},{c:'ん',r:'n'},
 ];
 
-const vocab = [
-  {e:'👋',jp:'こんにちは',r:'Konnichiwa',id:'Halo / Selamat siang'},
-  {e:'🌙',jp:'おはよう',r:'Ohayou',id:'Selamat pagi'},
-  {e:'🌆',jp:'こんばんは',r:'Konbanwa',id:'Selamat malam'},
-  {e:'🙏',jp:'ありがとう',r:'Arigatou',id:'Terima kasih'},
-  {e:'😊',jp:'どういたしまして',r:"Dou itashimashite",id:'Sama-sama'},
-  {e:'🤝',jp:'はじめまして',r:'Hajimemashite',id:'Salam kenal'},
-  {e:'🍚',jp:'ごはん',r:'Gohan',id:'Nasi / Makanan'},
-  {e:'💧',jp:'みず',r:'Mizu',id:'Air'},
-  {e:'🏠',jp:'いえ',r:'Ie',id:'Rumah'},
-  {e:'🚂',jp:'でんしゃ',r:'Densha',id:'Kereta'},
-  {e:'📚',jp:'ほん',r:'Hon',id:'Buku'},
-  {e:'🐈',jp:'ねこ',r:'Neko',id:'Kucing'},
-  {e:'🐶',jp:'いぬ',r:'Inu',id:'Anjing'},
-  {e:'🌸',jp:'はな',r:'Hana',id:'Bunga'},
-  {e:'☀️',jp:'てんき',r:'Tenki',id:'Cuaca'},
-  {e:'❤️',jp:'すき',r:'Suki',id:'Suka / Cinta'},
+const katakana = [
+  {c:'ア',r:'a'},{c:'イ',r:'i'},{c:'ウ',r:'u'},{c:'エ',r:'e'},{c:'オ',r:'o'},
+  {c:'カ',r:'ka'},{c:'キ',r:'ki'},{c:'ク',r:'ku'},{c:'ケ',r:'ke'},{c:'コ',r:'ko'},
+  {c:'サ',r:'sa'},{c:'シ',r:'shi'},{c:'ス',r:'su'},{c:'セ',r:'se'},{c:'ソ',r:'so'},
+  {c:'タ',r:'ta'},{c:'チ',r:'chi'},{c:'ツ',r:'tsu'},{c:'テ',r:'te'},{c:'ト',r:'to'},
+  {c:'ナ',r:'na'},{c:'ニ',r:'ni'},{c:'ヌ',r:'nu'},{c:'ネ',r:'ne'},{c:'ノ',r:'no'},
+  {c:'ハ',r:'ha'},{c:'ヒ',r:'hi'},{c:'フ',r:'fu'},{c:'ヘ',r:'he'},{c:'ホ',r:'ho'},
+  {c:'マ',r:'ma'},{c:'ミ',r:'mi'},{c:'ム',r:'mu'},{c:'メ',r:'me'},{c:'モ',r:'mo'},
+  {c:'ヤ',r:'ya'},{c:'',r:''},{c:'ユ',r:'yu'},{c:'',r:''},{c:'ヨ',r:'yo'},
+  {c:'ラ',r:'ra'},{c:'リ',r:'ri'},{c:'ル',r:'ru'},{c:'レ',r:'re'},{c:'ロ',r:'ro'},
+  {c:'ワ',r:'wa'},{c:'',r:''},{c:'ヲ',r:'wo'},{c:'',r:''},{c:'ン',r:'n'},
 ];
+
+const vocabCategories = [
+  {
+    title:'👋 挨拶 — Sapaan',
+    words:[
+      {e:'👋',jp:'こんにちは',r:'Konnichiwa',id:'Halo / Selamat siang'},
+      {e:'🌅',jp:'おはようございます',r:'Ohayou gozaimasu',id:'Selamat pagi (formal)'},
+      {e:'🌆',jp:'こんばんは',r:'Konbanwa',id:'Selamat malam'},
+      {e:'🙏',jp:'ありがとうございます',r:'Arigatou gozaimasu',id:'Terima kasih (formal)'},
+      {e:'😊',jp:'どういたしまして',r:'Dou itashimashite',id:'Sama-sama'},
+      {e:'🤝',jp:'はじめまして',r:'Hajimemashite',id:'Salam kenal'},
+      {e:'👋',jp:'さようなら',r:'Sayounara',id:'Selamat tinggal'},
+      {e:'🙇',jp:'すみません',r:'Sumimasen',id:'Permisi / Maaf'},
+    ]
+  },
+  {
+    title:'🍂 季節 — Musim',
+    words:[
+      {e:'🌸',jp:'はる',r:'Haru',id:'Musim semi'},
+      {e:'☀️',jp:'なつ',r:'Natsu',id:'Musim panas'},
+      {e:'🍂',jp:'あき',r:'Aki',id:'Musim gugur'},
+      {e:'❄️',jp:'ふゆ',r:'Fuyu',id:'Musim dingin'},
+      {e:'🌧️',jp:'あめ',r:'Ame',id:'Hujan'},
+      {e:'☁️',jp:'くもり',r:'Kumori',id:'Mendung'},
+      {e:'☀️',jp:'てんき',r:'Tenki',id:'Cuaca'},
+      {e:'🌡️',jp:'あつい',r:'Atsui',id:'Panas'},
+    ]
+  },
+  {
+    title:'📍 場所 — Tempat',
+    words:[
+      {e:'🏠',jp:'いえ',r:'Ie',id:'Rumah'},
+      {e:'🏫',jp:'がっこう',r:'Gakkou',id:'Sekolah'},
+      {e:'🏥',jp:'びょういん',r:'Byouin',id:'Rumah sakit'},
+      {e:'🚉',jp:'えき',r:'Eki',id:'Stasiun'},
+      {e:'🏪',jp:'みせ',r:'Mise',id:'Toko'},
+      {e:'🍽️',jp:'レストラン',r:'Resutoran',id:'Restoran'},
+      {e:'🏦',jp:'ぎんこう',r:'Ginkou',id:'Bank'},
+      {e:'✈️',jp:'くうこう',r:'Kuukou',id:'Bandara'},
+    ]
+  },
+  {
+    title:'👨‍👩‍👧 人 — Orang',
+    words:[
+      {e:'🧑',jp:'わたし',r:'Watashi',id:'Saya'},
+      {e:'👥',jp:'あなた',r:'Anata',id:'Kamu / Anda'},
+      {e:'👨',jp:'おとこ',r:'Otoko',id:'Laki-laki'},
+      {e:'👩',jp:'おんな',r:'Onna',id:'Perempuan'},
+      {e:'👧',jp:'こども',r:'Kodomo',id:'Anak-anak'},
+      {e:'👴',jp:'おじいさん',r:'Ojiisan',id:'Kakek'},
+      {e:'👵',jp:'おばあさん',r:'Obaasan',id:'Nenek'},
+      {e:'👨‍👩‍👦',jp:'かぞく',r:'Kazoku',id:'Keluarga'},
+    ]
+  },
+  {
+    title:'🌟 その他 — Lainnya',
+    words:[
+      {e:'📚',jp:'ほん',r:'Hon',id:'Buku'},
+      {e:'🚂',jp:'でんしゃ',r:'Densha',id:'Kereta'},
+      {e:'❤️',jp:'すき',r:'Suki',id:'Suka / Cinta'},
+      {e:'🌸',jp:'はな',r:'Hana',id:'Bunga'},
+      {e:'💧',jp:'みず',r:'Mizu',id:'Air'},
+      {e:'🎵',jp:'おんがく',r:'Ongaku',id:'Musik'},
+      {e:'⚽',jp:'スポーツ',r:'Supootsu',id:'Olahraga'},
+      {e:'🎒',jp:'かばん',r:'Kaban',id:'Tas'},
+    ]
+  },
+  {
+    title:'🐾 動物 — Hewan',
+    words:[
+      {e:'🐈',jp:'ねこ',r:'Neko',id:'Kucing'},
+      {e:'🐶',jp:'いぬ',r:'Inu',id:'Anjing'},
+      {e:'🐟',jp:'さかな',r:'Sakana',id:'Ikan'},
+      {e:'🐦',jp:'とり',r:'Tori',id:'Burung'},
+      {e:'🐰',jp:'うさぎ',r:'Usagi',id:'Kelinci'},
+      {e:'🐻',jp:'くま',r:'Kuma',id:'Beruang'},
+      {e:'🐘',jp:'ぞう',r:'Zou',id:'Gajah'},
+      {e:'🐯',jp:'とら',r:'Tora',id:'Harimau'},
+      {e:'🐒',jp:'さる',r:'Saru',id:'Monyet'},
+      {e:'🐍',jp:'へび',r:'Hebi',id:'Ular'},
+    ]
+  },
+  {
+    title:'🍱 食べ物 — Makanan',
+    words:[
+      {e:'🍚',jp:'ごはん',r:'Gohan',id:'Nasi'},
+      {e:'🍜',jp:'ラーメン',r:'Raamen',id:'Ramen'},
+      {e:'🍣',jp:'すし',r:'Sushi',id:'Sushi'},
+      {e:'🍱',jp:'べんとう',r:'Bentou',id:'Bekal / Bento'},
+      {e:'🍙',jp:'おにぎり',r:'Onigiri',id:'Onigiri'},
+      {e:'🍤',jp:'てんぷら',r:'Tempura',id:'Tempura'},
+      {e:'🥩',jp:'にく',r:'Niku',id:'Daging'},
+      {e:'🥦',jp:'やさい',r:'Yasai',id:'Sayuran'},
+      {e:'🍎',jp:'くだもの',r:'Kudamono',id:'Buah-buahan'},
+      {e:'🍵',jp:'おちゃ',r:'Ocha',id:'Teh hijau'},
+    ]
+  },
+];
+
+// flat list for quiz
+const vocab = vocabCategories.flatMap(c => c.words);
 
 const dialogues = [
   {
@@ -1007,8 +1137,10 @@ const numbers = [
 
 // ===== STATE =====
 let learned = new Set();
+let learnedKata = new Set();
 let quizStreak = 0;
 let hideMode = false;
+let hideModeKata = false;
 let quizData = [], qIdx = 0, score = 0, answered = false;
 
 // ===== RENDER =====
@@ -1019,6 +1151,17 @@ function renderKana() {
       <span class="kana-char">${k.c}</span>
       <span class="kana-rom">${k.r}</span>
       <button class="kana-speak" onclick="event.stopPropagation();speakJP('${k.c}')">🔊</button>
+    </div>
+  ` : '<div></div>').join('');
+}
+
+function renderKata() {
+  const grid = document.getElementById('kata-grid');
+  grid.innerHTML = katakana.map((k,i) => k.c ? `
+    <div class="kana-card ${learnedKata.has(i)?'learned':''}" onclick="toggleLearnKata(${i})" style="border-color:${learnedKata.has(i)?'':'#f0e0f5'};">
+      <span class="kana-char">${k.c}</span>
+      <span class="kana-rom">${k.r}</span>
+      <button class="kana-speak" onclick="event.stopPropagation();speakJP('${k.c}')" style="color:#c026d3;background:rgba(192,38,211,0.1);">🔊</button>
     </div>
   ` : '<div></div>').join('');
 }
@@ -1034,17 +1177,31 @@ function toggleLearn(i) {
   updateStats();
 }
 
+function toggleLearnKata(i) {
+  if (learnedKata.has(i)) {
+    learnedKata.delete(i);
+  } else {
+    learnedKata.add(i);
+    showToast(`✅ ${katakana[i].c} (${katakana[i].r}) sudah dipelajari!`);
+  }
+  renderKata();
+  updateStats();
+}
+
 function renderVocab() {
-  document.getElementById('vocab-list').innerHTML = vocab.map(v => `
-    <div class="vocab-card" onclick="speakJP('${v.jp}')">
-      <div class="vocab-emoji">${v.e}</div>
-      <div>
-        <div class="vocab-jp">${v.jp}</div>
-        <div class="vocab-rom">${v.r}</div>
-        <div class="vocab-id">${v.id}</div>
+  document.getElementById('vocab-list').innerHTML = vocabCategories.map(cat => `
+    <div class="vocab-category-title">${cat.title}</div>
+    ${cat.words.map(v => `
+      <div class="vocab-card" onclick="speakJP('${v.jp}')">
+        <div class="vocab-emoji">${v.e}</div>
+        <div>
+          <div class="vocab-jp">${v.jp}</div>
+          <div class="vocab-rom">${v.r}</div>
+          <div class="vocab-id">${v.id}</div>
+        </div>
+        <button class="vocab-play" onclick="event.stopPropagation();speakJP('${v.jp}')">🔊</button>
       </div>
-      <button class="vocab-play" onclick="event.stopPropagation();speakJP('${v.jp}')">🔊</button>
-    </div>
+    `).join('')}
   `).join('');
 }
 
@@ -1185,8 +1342,24 @@ function toggleHideMode() {
   }
 }
 
+function toggleHideModeKata() {
+  hideModeKata = !hideModeKata;
+  const grid = document.getElementById('kata-grid');
+  const toggle = document.getElementById('hide-toggle-kata');
+  const knob = document.getElementById('hide-knob-kata');
+  if (hideModeKata) {
+    grid.classList.add('hide-mode');
+    toggle.style.background = '#c026d3';
+    knob.style.left = '22px';
+  } else {
+    grid.classList.remove('hide-mode');
+    toggle.style.background = '#e0e0e0';
+    knob.style.left = '2px';
+  }
+}
+
 function updateStats() {
-  document.getElementById('stat-kana').textContent = learned.size;
+  document.getElementById('stat-kana').textContent = learned.size + learnedKata.size;
   document.getElementById('stat-streak').textContent = quizStreak;
 }
 
@@ -1204,7 +1377,7 @@ function goTab(tab) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('sec-'+tab).classList.add('active');
   document.querySelectorAll('.tab-btn').forEach(b => {
-    if (b.textContent.includes({beranda:'Beranda',hiragana:'Hiragana',kosakata:'Kosakata',percakapan:'Percakapan',angka:'Angka',kuis:'Kuis'}[tab])) b.classList.add('active');
+    if (b.textContent.includes({beranda:'Beranda',hiragana:'Hiragana',katakana:'Katakana',kosakata:'Kosakata',percakapan:'Percakapan',angka:'Angka',kuis:'Kuis'}[tab])) b.classList.add('active');
   });
   if (tab === 'kuis') {
     document.getElementById('quiz-result').classList.remove('show');
@@ -1215,6 +1388,7 @@ function goTab(tab) {
 
 // ===== INIT =====
 renderKana();
+renderKata();
 renderVocab();
 renderDialogues();
 renderNumbers();
